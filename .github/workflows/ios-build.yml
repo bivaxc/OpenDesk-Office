@@ -1,0 +1,31 @@
+name: iOS Simulator Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unpack iPhone project
+        run: unzip -o OpenDesk-Office-iPhone-Phase1.zip
+      - name: Show Xcode version
+        run: xcodebuild -version
+      - name: Build iOS Simulator app
+        working-directory: OpenDesk-Office-iPhone
+        run: |
+          xcodebuild \
+            -project OpenDeskOffice.xcodeproj \
+            -scheme OpenDeskOffice \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGNING_ALLOWED=NO \
+            build
