@@ -34,7 +34,7 @@ final class LocalDocumentStore: ObservableObject {
                     modified: values?.contentModificationDate ?? .distantPast)
             }.sorted { $0.modified > $1.modified }
         } catch {
-            errorMessage = "Could not read the local document library: (error.localizedDescription)"
+            errorMessage = "Could not read the local document library: \(error.localizedDescription)"
         }
     }
     func importFiles(_ urls: [URL]) {
@@ -43,22 +43,22 @@ final class LocalDocumentStore: ObservableObject {
             defer { if granted { source.stopAccessingSecurityScopedResource() } }
             let destination = uniqueDestination(for: source.lastPathComponent)
             do { try fileManager.copyItem(at: source, to: destination) }
-            catch { errorMessage = "Could not import (source.lastPathComponent): (error.localizedDescription)" }
+            catch { errorMessage = "Could not import \(source.lastPathComponent): \(error.localizedDescription)" }
         }
         refresh()
     }
     func saveScannedPDF(data: Data) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyyMMdd-HHmmss"
-        let name = "Scan-(formatter.string(from: Date())).pdf"
+        let name = "Scan-\(formatter.string(from: Date())).pdf"
         do {
             try data.write(to: documentsDirectory.appendingPathComponent(name), options: .atomic)
             refresh()
-        } catch { errorMessage = "Could not save scanned PDF: (error.localizedDescription)" }
+        } catch { errorMessage = "Could not save scanned PDF: \(error.localizedDescription)" }
     }
     func delete(_ document: LocalDocument) {
         do { try fileManager.removeItem(at: document.url); refresh() }
-        catch { errorMessage = "Could not delete file: (error.localizedDescription)" }
+        catch { errorMessage = "Could not delete file: \(error.localizedDescription)" }
     }
     private func uniqueDestination(for filename: String) -> URL {
         let base = URL(fileURLWithPath: filename).deletingPathExtension().lastPathComponent
@@ -66,7 +66,7 @@ final class LocalDocumentStore: ObservableObject {
         var candidate = documentsDirectory.appendingPathComponent(filename)
         var index = 2
         while fileManager.fileExists(atPath: candidate.path) {
-            let next = ext.isEmpty ? "(base) ((index))" : "(base) ((index)).(ext)"
+            let next = ext.isEmpty ? "\(base) (\(index))" : "\(base) (\(index)).\(ext)"
             candidate = documentsDirectory.appendingPathComponent(next)
             index += 1
         }
