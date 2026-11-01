@@ -67,8 +67,7 @@ struct ContentView: View {
                     HStack {
                         Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
                         TextField("Search documents", text: $searchText).textInputAutocapitalization(.never)
-                    }
-                    .padding(14).background(panel, in: RoundedRectangle(cornerRadius: 14))
+                    }.padding(14).background(panel, in: RoundedRectangle(cornerRadius: 14))
                     Button { showingScanner = true } label: {
                         HStack(spacing: 16) {
                             Image(systemName: "viewfinder").font(.system(size: 32, weight: .medium))
@@ -128,7 +127,7 @@ struct ContentView: View {
         NavigationStack {
             List {
                 Section("Storage") {
-                    LabeledContent("Local documents", value: "(store.documents.count)")
+                    LabeledContent("Local documents", value: "\(store.documents.count)")
                     Text("Documents are stored on this iPhone. Nothing is uploaded.")
                 }
                 Section("Preferences") {
